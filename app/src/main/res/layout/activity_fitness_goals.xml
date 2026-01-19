@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- FILE TO BE DELETED - Not relevant to Vehicle Tracking -->
+<!--
+    FILE MARKED FOR DELETION - Not relevant to Vehicle Tracking Application
+    This file was created by mistake and should be removed.
+    Fitness goals tracking is not part of a vehicle tracking system.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="⚠️"
+        android:textSize="64sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="This feature is not applicable\nto Vehicle Tracking System"
+        android:textColor="#757575"
+        android:textSize="16sp" />
+
+</LinearLayout>

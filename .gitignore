@@ -95,18 +95,18 @@ Thumbs.db
 *.md
 *.MD
 
-# But keep README.md for GitHub
-!README.md
-
 # === EXCLUDE SCRIPTS AND INSTRUCTION FILES ===
+# Exclude all shell scripts
 *.sh
+
+# Exclude all text files
 *.txt
-cleanup.sh
-push_to_github.sh
-git_push.sh
+*.TXT
 
 # Exclude specific documentation folders
 docs/
 documentation/
 
 # === END OF EXCLUSIONS ===
+
+

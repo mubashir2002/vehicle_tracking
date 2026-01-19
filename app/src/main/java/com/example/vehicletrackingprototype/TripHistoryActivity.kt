@@ -43,7 +43,9 @@ class TripHistoryActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
-        database = FirebaseDatabase.getInstance().reference
+        // Explicitly set database URL
+        val databaseUrl = "https://vehicletrackingprototype-d8b88-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        database = FirebaseDatabase.getInstance(databaseUrl).reference
 
         spinnerVehicle = findViewById(R.id.spinnerVehicleHistory)
         btnPlayTrip = findViewById(R.id.btnPlayTrip)

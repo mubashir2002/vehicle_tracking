@@ -1,89 +1,222 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFECEFF1">
+    android:background="#F5F7FA">
 
-    <fragment
-        android:id="@+id/mapFleet"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
+    <!-- Map Container -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/mapCard"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_margin="12dp"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="8dp"
+        app:layout_constraintTop_toBottomOf="@id/statsCard"
+        app:layout_constraintBottom_toTopOf="@id/fleetListCard"
+        app:layout_constraintHeight_percent="0.45">
 
-    <!-- Top Stats Panel -->
-    <LinearLayout
-        android:id="@+id/statsPanel"
+        <fragment
+            android:id="@+id/mapFleet"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Stats Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/statsCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:orientation="horizontal"
-        android:padding="12dp"
-        android:background="#DD2196F3">
+        app:cardElevation="6dp"
+        app:cardCornerRadius="0dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Fleet Dashboard"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"
-            android:layout_weight="1" />
+            android:orientation="vertical"
+            android:background="@drawable/gradient_background"
+            android:padding="16dp">
 
-        <TextView
-            android:id="@+id/txtTotalVehicles"
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📊 Fleet Dashboard"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Stats Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <!-- Total Vehicles -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#40FFFFFF"
+                    android:padding="12dp"
+                    android:layout_marginEnd="6dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🚗"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/txtTotalVehicles"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Total"
+                        android:textColor="#E0FFFFFF"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <!-- Active Vehicles -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#40FFFFFF"
+                    android:padding="12dp"
+                    android:layout_marginEnd="6dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="✅"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/txtActiveVehicles"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#C8E6C9"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Active"
+                        android:textColor="#E0FFFFFF"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <!-- Alerts -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:background="#40FFFFFF"
+                    android:padding="12dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/txtAlerts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#FFCDD2"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Alerts"
+                        android:textColor="#E0FFFFFF"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Fleet List Card -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/fleetListCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="6dp"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Total: 0"
-            android:textColor="@android:color/white"
-            android:paddingHorizontal="8dp" />
+            android:orientation="vertical"
+            android:background="#FFFFFF">
 
-        <TextView
-            android:id="@+id/txtActiveVehicles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Active: 0"
-            android:textColor="#C8E6C9"
-            android:paddingHorizontal="8dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="🚙 Fleet Vehicles"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:textColor="#333333"
+                android:padding="16dp"
+                android:background="#F5F5F5" />
 
-        <TextView
-            android:id="@+id/txtAlerts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Alerts: 0"
-            android:textColor="#FFCDD2"
-            android:paddingHorizontal="8dp" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerFleet"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:padding="8dp" />
 
-    </LinearLayout>
+        </LinearLayout>
 
+    </androidx.cardview.widget.CardView>
+
+    <!-- Loading Progress -->
     <ProgressBar
         android:id="@+id/progressLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Bottom Fleet List -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:background="#EEFFFFFF">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Fleet Vehicles"
-            android:textStyle="bold"
-            android:padding="8dp"
-            android:background="#E3F2FD" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerFleet"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

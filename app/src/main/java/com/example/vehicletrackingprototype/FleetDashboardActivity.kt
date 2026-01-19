@@ -52,7 +52,9 @@ class FleetDashboardActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
-        database = FirebaseDatabase.getInstance().reference
+        // Explicitly set database URL
+        val databaseUrl = "https://vehicletrackingprototype-d8b88-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        database = FirebaseDatabase.getInstance(databaseUrl).reference
 
         recyclerFleet = findViewById(R.id.recyclerFleet)
         txtTotalVehicles = findViewById(R.id.txtTotalVehicles)
@@ -233,23 +235,23 @@ class FleetDashboardActivity : AppCompatActivity(), OnMapReadyCallback {
         override fun onBindViewHolder(holder: FleetViewHolder, position: Int) {
             val status = vehicles[position]
             holder.txtName.text = status.vehicle.name
-            holder.txtSpeed.text = "%.1f km/h".format(status.speed * 3.6f)
+            holder.txtSpeed.text = "${String.format("%.0f", status.speed * 3.6f)}"
 
             when {
                 status.hasAlert -> {
-                    holder.txtStatus.text = status.alertMessage
+                    holder.txtStatus.text = "● ${status.alertMessage}"
                     holder.txtStatus.setTextColor(Color.RED)
-                    holder.viewIndicator.setBackgroundColor(Color.RED)
+                    holder.viewIndicator.setBackgroundResource(R.drawable.circle_red)
                 }
                 status.isActive -> {
-                    holder.txtStatus.text = "Active"
+                    holder.txtStatus.text = "● Active"
                     holder.txtStatus.setTextColor(Color.parseColor("#4CAF50"))
-                    holder.viewIndicator.setBackgroundColor(Color.parseColor("#4CAF50"))
+                    holder.viewIndicator.setBackgroundResource(R.drawable.circle_green)
                 }
                 else -> {
-                    holder.txtStatus.text = "Inactive"
+                    holder.txtStatus.text = "● Inactive"
                     holder.txtStatus.setTextColor(Color.GRAY)
-                    holder.viewIndicator.setBackgroundColor(Color.GRAY)
+                    holder.viewIndicator.setBackgroundResource(R.drawable.circle_gray)
                 }
             }
 

@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
         // Check if already logged in
         if (auth.currentUser != null) {
+            Log.d(TAG, "User already logged in: ${auth.currentUser?.email}")
             goToMain()
             return
         }
@@ -41,23 +42,31 @@ class LoginActivity : AppCompatActivity() {
         btnLogin = findViewById(R.id.btnLogin)
         btnRegister = findViewById(R.id.btnRegister)
 
+        Log.d(TAG, "LoginActivity created successfully")
+
         // REGISTER BUTTON
         btnRegister.setOnClickListener {
+            Log.d(TAG, "Register button clicked")
             val email = edtEmail.text.toString().trim()
             val password = edtPassword.text.toString().trim()
 
+            Log.d(TAG, "Email: $email, Password length: ${password.length}")
+
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "Empty fields")
                 return@setOnClickListener
             }
 
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "Invalid email format")
                 return@setOnClickListener
             }
 
             if (password.length < 6) {
                 Toast.makeText(this, "Password must be at least 6 characters", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "Password too short")
                 return@setOnClickListener
             }
 
@@ -66,16 +75,21 @@ class LoginActivity : AppCompatActivity() {
 
         // LOGIN BUTTON
         btnLogin.setOnClickListener {
+            Log.d(TAG, "Login button clicked")
             val email = edtEmail.text.toString().trim()
             val password = edtPassword.text.toString().trim()
 
+            Log.d(TAG, "Email: $email, Password length: ${password.length}")
+
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please enter all fields", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "Empty fields")
                 return@setOnClickListener
             }
 
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+                Log.w(TAG, "Invalid email format")
                 return@setOnClickListener
             }
 
@@ -94,17 +108,18 @@ class LoginActivity : AppCompatActivity() {
                 val userId = result.user?.uid ?: return@addOnSuccessListener
                 Log.d(TAG, "User registered successfully: $userId")
 
-                // Save user data to database
+                // Save user data to database with explicit URL
+                val databaseUrl = "https://vehicletrackingprototype-d8b88-default-rtdb.asia-southeast1.firebasedatabase.app/"
                 val userData = mapOf(
                     "email" to email,
                     "createdAt" to System.currentTimeMillis()
                 )
 
-                FirebaseDatabase.getInstance().reference
+                FirebaseDatabase.getInstance(databaseUrl).reference
                     .child("users").child(userId)
                     .setValue(userData)
                     .addOnSuccessListener {
-                        Log.d(TAG, "User data saved to database")
+                        Log.d(TAG, "User data saved to database at: $databaseUrl")
                         Toast.makeText(this, "Registered successfully!", Toast.LENGTH_SHORT).show()
                         goToMain()
                     }
@@ -123,22 +138,22 @@ class LoginActivity : AppCompatActivity() {
                 val errorMessage = when {
                     e is FirebaseAuthException -> {
                         when (e.errorCode) {
-                            "ERROR_INVALID_EMAIL" -> "Invalid email address format"
-                            "ERROR_EMAIL_ALREADY_IN_USE" -> "This email is already registered. Please login instead."
-                            "ERROR_WEAK_PASSWORD" -> "Password is too weak. Use at least 6 characters."
-                            "ERROR_NETWORK_REQUEST_FAILED" -> "Network error. Please check your internet connection."
-                            else -> "Registration failed: ${e.message}"
+                            "ERROR_INVALID_EMAIL" -> "❌ Invalid email format. Please enter a valid email address."
+                            "ERROR_EMAIL_ALREADY_IN_USE" -> "⚠️ This email is already registered.\nPlease use the LOGIN button instead."
+                            "ERROR_WEAK_PASSWORD" -> "🔒 Password is too weak.\nPlease use at least 6 characters with letters and numbers."
+                            "ERROR_NETWORK_REQUEST_FAILED" -> "📡 Network error.\nPlease check your internet connection and try again."
+                            else -> "❌ Registration failed: ${e.message}"
                         }
                     }
                     e.message?.contains("CONFIGURATION_NOT_FOUND") == true -> {
                         showFirebaseConfigError()
-                        "Firebase configuration error. Please check setup."
+                        "⚙️ Firebase configuration error. Please check setup."
                     }
                     e.message?.contains("internal error") == true -> {
                         showFirebaseSetupDialog()
-                        "Firebase Authentication not properly configured"
+                        "⚙️ Firebase Authentication not properly configured"
                     }
-                    else -> "Registration failed: ${e.message}"
+                    else -> "❌ Registration failed: ${e.message}"
                 }
 
                 Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
@@ -165,23 +180,25 @@ class LoginActivity : AppCompatActivity() {
                 val errorMessage = when {
                     e is FirebaseAuthException -> {
                         when (e.errorCode) {
-                            "ERROR_INVALID_EMAIL" -> "Invalid email address format"
-                            "ERROR_WRONG_PASSWORD" -> "Incorrect password"
-                            "ERROR_USER_NOT_FOUND" -> "No account found with this email. Please register."
-                            "ERROR_USER_DISABLED" -> "This account has been disabled"
-                            "ERROR_NETWORK_REQUEST_FAILED" -> "Network error. Please check your internet connection."
-                            else -> "Login failed: ${e.message}"
+                            "ERROR_INVALID_EMAIL" -> "❌ Invalid email format.\nPlease check your email address."
+                            "ERROR_WRONG_PASSWORD" -> "🔑 Incorrect password.\nPlease check your password and try again."
+                            "ERROR_USER_NOT_FOUND" -> "📧 Email not registered.\nNo account found with this email.\nPlease create an account first using the CREATE ACCOUNT button."
+                            "ERROR_INVALID_CREDENTIAL" -> "❌ Invalid credentials.\nThe email or password you entered is incorrect."
+                            "ERROR_USER_DISABLED" -> "⛔ Account disabled.\nThis account has been disabled. Please contact support."
+                            "ERROR_NETWORK_REQUEST_FAILED" -> "📡 Network error.\nPlease check your internet connection and try again."
+                            "ERROR_TOO_MANY_REQUESTS" -> "⏱️ Too many attempts.\nPlease wait a few minutes before trying again."
+                            else -> "❌ Login failed: ${e.message}"
                         }
                     }
                     e.message?.contains("CONFIGURATION_NOT_FOUND") == true -> {
                         showFirebaseConfigError()
-                        "Firebase configuration error"
+                        "⚙️ Firebase configuration error"
                     }
                     e.message?.contains("internal error") == true -> {
                         showFirebaseSetupDialog()
-                        "Firebase Authentication not configured"
+                        "⚙️ Firebase Authentication not configured"
                     }
-                    else -> "Login failed: ${e.message}"
+                    else -> "❌ Login failed: ${e.message}"
                 }
 
                 Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()

@@ -79,7 +79,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback {
             return
         }
 
-        database = FirebaseDatabase.getInstance().reference
+        // Explicitly set database URL to ensure correct connection
+        val databaseUrl = "https://vehicletrackingprototype-d8b88-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        database = FirebaseDatabase.getInstance(databaseUrl).reference
 
         txtLocation = findViewById(R.id.txtLocation)
         txtSpeed = findViewById(R.id.txtSpeed)

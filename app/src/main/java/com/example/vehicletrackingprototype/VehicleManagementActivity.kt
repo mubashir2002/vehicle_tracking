@@ -15,7 +15,7 @@ class VehicleManagementActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var btnAddVehicle: Button
-    private lateinit var txtNoVehicles: TextView
+    private lateinit var txtNoVehicles: LinearLayout
 
     private val vehicleList = mutableListOf<Vehicle>()
     private lateinit var adapter: VehicleAdapter
@@ -28,11 +28,18 @@ class VehicleManagementActivity : AppCompatActivity() {
 
         val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
         userKey = prefs.getString("userKey", null) ?: run {
+            Toast.makeText(this, "Error: User not logged in. Please login again.", Toast.LENGTH_LONG).show()
+            android.util.Log.e("VehicleManagement", "UserKey is null! User not logged in.")
             finish()
             return
         }
 
-        database = FirebaseDatabase.getInstance().reference
+        android.util.Log.d("VehicleManagement", "onCreate: userKey = $userKey")
+        
+        // Explicitly set database URL to ensure correct connection
+        val databaseUrl = "https://vehicletrackingprototype-d8b88-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        database = FirebaseDatabase.getInstance(databaseUrl).reference
+        android.util.Log.d("VehicleManagement", "Using database URL: $databaseUrl")
 
         recyclerView = findViewById(R.id.recyclerVehicles)
         btnAddVehicle = findViewById(R.id.btnAddVehicle)
@@ -52,21 +59,37 @@ class VehicleManagementActivity : AppCompatActivity() {
     }
 
     private fun loadVehicles() {
+        val vehiclesPath = "users/$userKey/vehicles"
+        android.util.Log.d("VehicleManagement", "loadVehicles: Listening to path: $vehiclesPath")
+        
         database.child("users").child(userKey).child("vehicles")
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    android.util.Log.d("VehicleManagement", "onDataChange: snapshot exists=${snapshot.exists()}, children count=${snapshot.childrenCount}")
+                    
                     vehicleList.clear()
+                    var count = 0
                     for (child in snapshot.children) {
+                        android.util.Log.d("VehicleManagement", "Processing child: ${child.key}")
                         val vehicle = child.getValue(Vehicle::class.java)
-                        vehicle?.let { vehicleList.add(it) }
+                        if (vehicle != null) {
+                            android.util.Log.d("VehicleManagement", "✅ Loaded vehicle: ${vehicle.name} (${vehicle.licensePlate})")
+                            vehicleList.add(vehicle)
+                            count++
+                        } else {
+                            android.util.Log.w("VehicleManagement", "⚠️ Failed to parse vehicle from child: ${child.key}")
+                        }
                     }
+                    
+                    android.util.Log.d("VehicleManagement", "Total vehicles loaded: $count")
                     adapter.notifyDataSetChanged()
                     txtNoVehicles.visibility = if (vehicleList.isEmpty()) View.VISIBLE else View.GONE
                 }
 
                 override fun onCancelled(error: DatabaseError) {
+                    android.util.Log.e("VehicleManagement", "❌ Error loading vehicles", error.toException())
                     Toast.makeText(this@VehicleManagementActivity,
-                        "Error loading vehicles: ${error.message}", Toast.LENGTH_SHORT).show()
+                        "❌ Error loading vehicles: ${error.message}", Toast.LENGTH_LONG).show()
                 }
             })
     }
@@ -95,8 +118,19 @@ class VehicleManagementActivity : AppCompatActivity() {
     }
 
     private fun addVehicle(name: String, licensePlate: String) {
+        android.util.Log.d("VehicleManagement", "addVehicle called: name=$name, plate=$licensePlate, userKey=$userKey")
+        
         val vehicleRef = database.child("users").child(userKey).child("vehicles").push()
-        val vehicleId = vehicleRef.key ?: return
+        val vehicleId = vehicleRef.key
+        
+        if (vehicleId == null) {
+            android.util.Log.e("VehicleManagement", "Failed to generate vehicle ID")
+            Toast.makeText(this, "Error: Could not generate vehicle ID", Toast.LENGTH_LONG).show()
+            return
+        }
+        
+        android.util.Log.d("VehicleManagement", "Generated vehicleId: $vehicleId")
+        android.util.Log.d("VehicleManagement", "Firebase path: users/$userKey/vehicles/$vehicleId")
 
         val vehicle = Vehicle(
             id = vehicleId,
@@ -105,13 +139,17 @@ class VehicleManagementActivity : AppCompatActivity() {
             ownerId = userKey,
             createdAt = System.currentTimeMillis()
         )
+        
+        android.util.Log.d("VehicleManagement", "Vehicle object created: $vehicle")
 
         vehicleRef.setValue(vehicle)
             .addOnSuccessListener {
-                Toast.makeText(this, "Vehicle added successfully", Toast.LENGTH_SHORT).show()
+                android.util.Log.d("VehicleManagement", "✅ Vehicle saved to Firebase successfully!")
+                Toast.makeText(this, "✅ Vehicle added: $name", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to add vehicle: ${it.message}", Toast.LENGTH_SHORT).show()
+            .addOnFailureListener { exception ->
+                android.util.Log.e("VehicleManagement", "❌ Failed to save vehicle", exception)
+                Toast.makeText(this, "❌ Failed to add vehicle: ${exception.message}", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -146,7 +184,7 @@ class VehicleManagementActivity : AppCompatActivity() {
         inner class VehicleViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val txtName: TextView = view.findViewById(R.id.txtVehicleName)
             val txtPlate: TextView = view.findViewById(R.id.txtLicensePlate)
-            val btnDelete: ImageButton = view.findViewById(R.id.btnDeleteVehicle)
+            val btnDelete: View = view.findViewById(R.id.btnDeleteVehicle)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VehicleViewHolder {
