@@ -29,6 +29,3 @@ A professional real-time vehicle tracking and fleet management Android applicati
 4. Enable Firebase Authentication
 5. Build and run
 
-## Author
-
-Mubashir

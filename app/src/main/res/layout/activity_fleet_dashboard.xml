@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFECEFF1">
+
+    <fragment
+        android:id="@+id/mapFleet"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Top Stats Panel -->
+    <LinearLayout
+        android:id="@+id/statsPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="#DD2196F3">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fleet Dashboard"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/txtTotalVehicles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total: 0"
+            android:textColor="@android:color/white"
+            android:paddingHorizontal="8dp" />
+
+        <TextView
+            android:id="@+id/txtActiveVehicles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active: 0"
+            android:textColor="#C8E6C9"
+            android:paddingHorizontal="8dp" />
+
+        <TextView
+            android:id="@+id/txtAlerts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alerts: 0"
+            android:textColor="#FFCDD2"
+            android:paddingHorizontal="8dp" />
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <!-- Bottom Fleet List -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="#EEFFFFFF">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fleet Vehicles"
+            android:textStyle="bold"
+            android:padding="8dp"
+            android:background="#E3F2FD" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerFleet"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+</RelativeLayout>
